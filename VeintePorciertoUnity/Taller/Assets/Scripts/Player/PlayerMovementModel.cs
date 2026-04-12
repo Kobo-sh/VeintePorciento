@@ -49,7 +49,7 @@ public class PlayerMovementModel : MonoBehaviour
         UpdateVelocityData();
     }
 
-    private void Move()
+    public void Move()
     {
         // Si falta algo, no seguimos.
         if (playerInputController == null || rb == null) return;
