@@ -1,5 +1,5 @@
-using UnityEngine;                  // Librería principal de Unity.
-using UnityEngine.InputSystem;      // Librería del nuevo Input System.
+using UnityEngine;                 
+using UnityEngine.InputSystem;
 
 public class PlayerInputController : MonoBehaviour
 {
