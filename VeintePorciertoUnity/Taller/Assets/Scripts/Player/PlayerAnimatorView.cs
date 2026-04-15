@@ -7,7 +7,8 @@ public class PlayerAnimatorView : MonoBehaviour
     {
         Idle,
         Walk,
-        Run
+        Run,
+        Jump  
     }
 
     [Header("Referencias")]
@@ -18,15 +19,15 @@ public class PlayerAnimatorView : MonoBehaviour
     // Referencia al Animator del personaje.
     [SerializeField] private Animator animator;
 
-    // NUEVO:
-    // Este es el objeto visual que quieres rotar.
-    // Puede ser el mismo personaje o el modelo hijo.
     [SerializeField] private Transform characterVisual;
 
     [Header("Parámetro del Animator")]
 
     // Nombre del parámetro float del Animator.
     [SerializeField] private string speedParameter = "Speed";
+
+    //Nombre del parámetro bool del Animator para el salto.
+    [SerializeField] private string jumpParameter = "IsJumping";
 
     [Header("Umbrales")]
 
@@ -39,7 +40,7 @@ public class PlayerAnimatorView : MonoBehaviour
     [Header("Rotación")]
 
     // Qué tan rápido gira el personaje.
-    [SerializeField] private float rotationSpeed = 10f;
+    [SerializeField] private float rotationSpeed = 5f;
 
     // Estado actual detectado.
     public AnimationState CurrentState { get; private set; }
@@ -47,10 +48,14 @@ public class PlayerAnimatorView : MonoBehaviour
     // Hash del parámetro Speed.
     private int _speedHash;
 
+    // Hash del parámetro IsJumping.
+    private int _jumpHash;
+
     private void Start()
     {
-        // Convertimos el nombre del parámetro a hash.
+        // Convertimos los nombres de parámetros a hash.
         _speedHash = Animator.StringToHash(speedParameter);
+        _jumpHash = Animator.StringToHash(jumpParameter); 
 
         // Revisamos referencias.
         if (playerMovementModel == null)
@@ -91,6 +96,10 @@ public class PlayerAnimatorView : MonoBehaviour
         // La enviamos al Animator.
         animator.SetFloat(_speedHash, speed);
 
+        // Enviamos si está saltando al Animator.
+        bool isJumping = !playerMovementModel.IsGrounded;
+        animator.SetBool(_jumpHash, isJumping);
+
         // Debug de Animator.
         if (speed > 0f)
         {
@@ -99,7 +108,11 @@ public class PlayerAnimatorView : MonoBehaviour
         }
 
         // Determinamos el estado lógico actual.
-        if (speed <= idleThreshold)
+        if (isJumping)
+        {
+            CurrentState = AnimationState.Jump;
+        }
+        else if (speed <= idleThreshold)
         {
             CurrentState = AnimationState.Idle;
         }
@@ -113,10 +126,7 @@ public class PlayerAnimatorView : MonoBehaviour
         }
 
         // Debug del estado.
-        if (speed > 0f)
-        {
-            Debug.Log($"[PlayerAnimatorView] Estado actual detectado: {CurrentState}");
-        }
+        Debug.Log($"[PlayerAnimatorView] Estado actual detectado: {CurrentState}");
     }
 
     private void UpdateRotation()
