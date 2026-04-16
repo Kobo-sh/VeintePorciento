@@ -6,10 +6,17 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] GameObject menuPausa;
 
+    //variables
+    [SerializeField] public static int puntos = 0;
+    [SerializeField] int _vida = 10;
+    [SerializeField] float _tiempo = 60f;
+    [SerializeField] int _tiempoE;
+    [SerializeField] public bool llave;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -47,10 +54,22 @@ public class GameManager : MonoBehaviour
             case "Quit":
                 Application.Quit();
                 break;
-   
+
         }
 
+    }
 
+    public void RestarVida(int daño)
+    {
+        _vida -= daño;
+        if (_vida <= 0)
+        {
+            SceneManager.LoadScene("Menu");
+        }
+    }
 
+    public void SumarVida(int cura)
+    {
+        _vida += cura;
     }
 }
