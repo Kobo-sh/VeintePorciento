@@ -5,9 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/probuilder.unity
+    guid: 4dcaf7ef43e3de74da3fc40d41a9e652
+  - enabled: 1
+    path: Assets/Scenes/PapiPerdiste.unity
+    guid: 2180c4c16cdddd240851577146b83224
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 91fa02b5cb82a644eaca891b56fdd08a, type: 3}
   m_UseUCBPForAssetBundles: 0
