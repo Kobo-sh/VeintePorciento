@@ -1,75 +1,62 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] GameObject menuPausa;
+    public static GameManager Instance { get; private set; }
 
-    //variables
-    [SerializeField] public static int puntos = 0;
-    [SerializeField] int _vida = 10;
-    [SerializeField] float _tiempo = 60f;
-    [SerializeField] int _tiempoE;
-    [SerializeField] public bool llave;
+    [Header("Configuración")]
+    [SerializeField] private float delayBeforeGameOver = 2f;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private bool gameOver = false;
+
+    private void Awake()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (Instance != null && Instance != this)
         {
-            if (menuPausa.activeSelf)
-            {
-                EstadoDelJuego("Play");
-                menuPausa.SetActive(false);
-            }
-            else
-            {
-                EstadoDelJuego("Pause");
-                menuPausa.SetActive(true);
-            }
-
+            Destroy(gameObject);
+            return;
         }
 
-
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
-    public void EstadoDelJuego(string estado)
+    private void Start()
     {
-        switch (estado)
-        {
+        HealthSystem playerHealth = GameObject.FindWithTag("Player")?.GetComponent<HealthSystem>();
 
-            case "Play":
-                Time.timeScale = 1;
-                break;
-            case "Pause":
-                Time.timeScale = 0;
-                break;
-            case "Quit":
-                Application.Quit();
-                break;
-
-        }
-
+        if (playerHealth != null)
+            playerHealth.OnDeath.AddListener(OnPlayerDeath);
+        else
+            Debug.LogWarning("[GameManager] No se encontró HealthSystem en el Player.");
     }
 
-    public void RestarVida(int daño)
+    public void OnPlayerDeath()
     {
-        _vida -= daño;
-        if (_vida <= 0)
-        {
-            SceneManager.LoadScene("Quit");
-        }
+        if (gameOver) return;
+        gameOver = true;
+
+        Debug.Log("[GameManager] El jugador murió. Cargando pantalla de Game Over...");
+
+        StartCoroutine(LoadGameOverScene());
     }
 
-    public void SumarVida(int cura)
+    private IEnumerator LoadGameOverScene()
     {
-        _vida += cura;
+        yield return new WaitForSeconds(delayBeforeGameOver);
+        SceneManager.LoadScene("PapiPerdiste");
+    }
+
+    public void RestartGame()
+    {
+        gameOver = false;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 }

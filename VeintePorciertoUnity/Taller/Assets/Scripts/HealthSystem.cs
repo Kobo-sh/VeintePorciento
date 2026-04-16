@@ -38,28 +38,28 @@ public class HealthSystem : MonoBehaviour
 
     [Header("Eventos")]
     public UnityEvent<float, float> OnHealthChanged;  // (vidaActual, vidaMaxima)
-    public UnityEvent<float>        OnDamageTaken;     // (cantidadDeDaño)
-    public UnityEvent<float>        OnHealed;          // (cantidadCurada)
-    public UnityEvent               OnDeath;
-    public UnityEvent               OnRevive;
+    public UnityEvent<float> OnDamageTaken;     // (cantidadDeDaño)
+    public UnityEvent<float> OnHealed;          // (cantidadCurada)
+    public UnityEvent OnDeath;
+    public UnityEvent OnRevive;
 
     // ──────────────────────────────────────────────
     // PROPIEDADES PÚBLICAS (solo lectura)
     // ──────────────────────────────────────────────
 
-    public float CurrentHealth    => currentHealth;
-    public float MaxHealth        => maxHealth;
-    public bool  IsAlive          => currentHealth > 0f;
-    public bool  IsInvincible     => isInvincible;
+    public float CurrentHealth => currentHealth;
+    public float MaxHealth => maxHealth;
+    public bool IsAlive => currentHealth > 0f;
+    public bool IsInvincible => isInvincible;
     public float HealthPercentage => currentHealth / maxHealth;
 
     // ──────────────────────────────────────────────
     // VARIABLES PRIVADAS
     // ──────────────────────────────────────────────
 
-    private bool  isInvincible       = false;
-    private float regenTimer         = 0f;
-    private bool  isDead             = false;
+    private bool isInvincible = false;
+    private float regenTimer = 0f;
+    private bool isDead = false;
     private Coroutine invincibilityCoroutine;
     private Coroutine regenCoroutine;
 
@@ -84,14 +84,13 @@ public class HealthSystem : MonoBehaviour
     /// <summary>
     /// Aplica daño al objeto. Respeta los iFrames si están activos.
     /// </summary>
-    /// <param name="amount">Cantidad de daño (valor positivo).</param>
     public void TakeDamage(float amount)
     {
         if (!IsAlive || isInvincible) return;
         if (amount <= 0f) return;
 
         currentHealth = Mathf.Max(currentHealth - amount, 0f);
-        regenTimer = 0f; // Reinicia el contador de regeneración
+        regenTimer = 0f;
 
         OnDamageTaken?.Invoke(amount);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
@@ -108,7 +107,6 @@ public class HealthSystem : MonoBehaviour
     /// <summary>
     /// Cura al objeto una cantidad determinada, sin superar la vida máxima.
     /// </summary>
-    /// <param name="amount">Cantidad a curar (valor positivo).</param>
     public void Heal(float amount)
     {
         if (!IsAlive) return;
@@ -157,7 +155,6 @@ public class HealthSystem : MonoBehaviour
     /// <summary>
     /// Revive al objeto con una cantidad de vida especificada.
     /// </summary>
-    /// <param name="healthOnRevive">Vida con la que revive (por defecto: vida máxima).</param>
     public void Revive(float healthOnRevive = -1f)
     {
         if (IsAlive) return;
@@ -193,7 +190,10 @@ public class HealthSystem : MonoBehaviour
     // MÉTODOS PRIVADOS
     // ──────────────────────────────────────────────
 
-    private void Die()
+    /// <summary>
+    /// Gestiona la muerte del jugador y notifica al GameManager.
+    /// </summary>
+    public void Die()
     {
         if (isDead) return;
         isDead = true;
@@ -207,6 +207,9 @@ public class HealthSystem : MonoBehaviour
 
         if (destroyOnDeath)
             Destroy(gameObject, destroyDelay);
+
+        // Notifica al GameManager para cargar la escena de Game Over
+        GameManager.Instance?.OnPlayerDeath();
     }
 
     private void HandleRegeneration()
@@ -240,7 +243,6 @@ public class HealthSystem : MonoBehaviour
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
-        // Muestra una barra de vida sobre el objeto en la Scene view
         UnityEditor.Handles.color = Color.green;
         UnityEditor.Handles.DrawWireDisc(transform.position + Vector3.up * 2.2f, Vector3.up, 0.5f);
     }
