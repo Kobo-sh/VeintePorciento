@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour
         _vida -= daño;
         if (_vida <= 0)
         {
-            SceneManager.LoadScene("Menu");
+            SceneManager.LoadScene("Quit");
         }
     }
 
