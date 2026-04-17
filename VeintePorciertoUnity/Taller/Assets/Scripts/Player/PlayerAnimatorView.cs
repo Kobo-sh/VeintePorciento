@@ -8,7 +8,8 @@ public class PlayerAnimatorView : MonoBehaviour
         Idle,
         Walk,
         Run,
-        Jump  
+        Jump,
+        Hurt  // NUEVO
     }
 
     [Header("Referencias")]
@@ -26,8 +27,11 @@ public class PlayerAnimatorView : MonoBehaviour
     // Nombre del parámetro float del Animator.
     [SerializeField] private string speedParameter = "Speed";
 
-    //Nombre del parámetro bool del Animator para el salto.
+    // Nombre del parámetro bool del Animator para el salto.
     [SerializeField] private string jumpParameter = "IsJumping";
+
+    // NUEVO: Nombre del parámetro trigger del Animator para el daño.
+    [SerializeField] private string hurtParameter = "IsHurt";
 
     [Header("Umbrales")]
 
@@ -51,11 +55,15 @@ public class PlayerAnimatorView : MonoBehaviour
     // Hash del parámetro IsJumping.
     private int _jumpHash;
 
+    // NUEVO: Hash del parámetro IsHurt.
+    private int _hurtHash;
+
     private void Start()
     {
         // Convertimos los nombres de parámetros a hash.
         _speedHash = Animator.StringToHash(speedParameter);
-        _jumpHash = Animator.StringToHash(jumpParameter); 
+        _jumpHash = Animator.StringToHash(jumpParameter);
+        _hurtHash = Animator.StringToHash(hurtParameter); // NUEVO
 
         // Revisamos referencias.
         if (playerMovementModel == null)
@@ -127,6 +135,16 @@ public class PlayerAnimatorView : MonoBehaviour
 
         // Debug del estado.
         Debug.Log($"[PlayerAnimatorView] Estado actual detectado: {CurrentState}");
+    }
+
+    // NUEVO: Se llama desde el evento OnDamageTaken del HealthSystem.
+    public void PlayHurtAnimation()
+    {
+        if (animator == null) return;
+
+        animator.SetTrigger(_hurtHash);
+        CurrentState = AnimationState.Hurt;
+        Debug.Log("[PlayerAnimatorView] Animación de daño activada.");
     }
 
     private void UpdateRotation()
