@@ -9,7 +9,8 @@ public class PlayerAnimatorView : MonoBehaviour
         Walk,
         Run,
         Jump,
-        Hurt  // NUEVO
+        Hurt,
+        Heal
     }
 
     [Header("Referencias")]
@@ -30,8 +31,11 @@ public class PlayerAnimatorView : MonoBehaviour
     // Nombre del parámetro bool del Animator para el salto.
     [SerializeField] private string jumpParameter = "IsJumping";
 
-    // NUEVO: Nombre del parámetro trigger del Animator para el daño.
+    // Nombre del parámetro trigger del Animator para el daño.
     [SerializeField] private string hurtParameter = "IsHurt";
+
+    // Nombre del parámetro trigger del Animator para la curación.
+    [SerializeField] private string healParameter = "IsHealing";
 
     [Header("Umbrales")]
 
@@ -55,15 +59,19 @@ public class PlayerAnimatorView : MonoBehaviour
     // Hash del parámetro IsJumping.
     private int _jumpHash;
 
-    // NUEVO: Hash del parámetro IsHurt.
+    // Hash del parámetro IsHurt.
     private int _hurtHash;
+
+    // Hash del parámetro IsHealing.
+    private int _healHash;
 
     private void Start()
     {
         // Convertimos los nombres de parámetros a hash.
         _speedHash = Animator.StringToHash(speedParameter);
         _jumpHash = Animator.StringToHash(jumpParameter);
-        _hurtHash = Animator.StringToHash(hurtParameter); // NUEVO
+        _hurtHash = Animator.StringToHash(hurtParameter);
+        _healHash = Animator.StringToHash(healParameter);
 
         // Revisamos referencias.
         if (playerMovementModel == null)
@@ -137,7 +145,7 @@ public class PlayerAnimatorView : MonoBehaviour
         Debug.Log($"[PlayerAnimatorView] Estado actual detectado: {CurrentState}");
     }
 
-    // NUEVO: Se llama desde el evento OnDamageTaken del HealthSystem.
+    // Se llama desde el evento OnDamageTaken del HealthSystem.
     public void PlayHurtAnimation()
     {
         if (animator == null) return;
@@ -145,6 +153,16 @@ public class PlayerAnimatorView : MonoBehaviour
         animator.SetTrigger(_hurtHash);
         CurrentState = AnimationState.Hurt;
         Debug.Log("[PlayerAnimatorView] Animación de daño activada.");
+    }
+
+    // Se llama desde el evento OnHealed del HealthSystem.
+    public void PlayHealAnimation()
+    {
+        if (animator == null) return;
+
+        animator.SetTrigger(_healHash);
+        CurrentState = AnimationState.Heal;
+        Debug.Log("[PlayerAnimatorView] Animación de curación activada.");
     }
 
     private void UpdateRotation()

@@ -17,6 +17,8 @@ public class PlayerMovementModel : MonoBehaviour
     [Header("Movimiento")]
     // Velocidad de movimiento del personaje.
     [SerializeField] private float moveSpeed = 5f;
+    // Velocidad base guardada para poder resetear el multiplicador.
+    private float _baseMoveSpeed;
     // Velocidad horizontal actual del personaje.
     public Vector3 CurrentHorizontalVelocity { get; private set; }
     // Magnitud de la velocidad horizontal.
@@ -39,6 +41,9 @@ public class PlayerMovementModel : MonoBehaviour
         {
             Debug.LogError("[PlayerMovementModel] Falta asignar GroundCheck en el Inspector.");
         }
+
+        // Guardamos la velocidad base.
+        _baseMoveSpeed = moveSpeed;
     }
 
     private void FixedUpdate()
@@ -114,6 +119,13 @@ public class PlayerMovementModel : MonoBehaviour
             Debug.Log($"[PlayerMovementModel] Dirección de movimiento: {CurrentMoveDirection}");
             Debug.Log($"[PlayerMovementModel] Velocidad aplicada al Rigidbody: {rb.linearVelocity}");
         }
+    }
+
+    // NUEVO: Aplica un multiplicador a la velocidad base.
+    public void SetSpeedMultiplier(float multiplier)
+    {
+        moveSpeed = _baseMoveSpeed * multiplier;
+        Debug.Log($"[PlayerMovementModel] Velocidad ajustada a: {moveSpeed}");
     }
 
     private void UpdateVelocityData()
