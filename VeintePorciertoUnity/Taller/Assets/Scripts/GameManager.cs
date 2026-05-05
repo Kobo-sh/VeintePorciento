@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEditor.ProBuilder;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    public spawn spawn;
 
     [Header("Configuración")]
     [SerializeField] private float delayBeforeGameOver = 2f;
@@ -86,5 +88,11 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("PapiPerdiste");
     }
 
-  
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Collision"))
+        {
+
+        }
+    }
 }
