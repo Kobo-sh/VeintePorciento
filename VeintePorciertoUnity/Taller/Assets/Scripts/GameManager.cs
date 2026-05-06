@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    public spawn spawn;
+
 
     [Header("Configuración")]
     [SerializeField] private float delayBeforeGameOver = 2f;
