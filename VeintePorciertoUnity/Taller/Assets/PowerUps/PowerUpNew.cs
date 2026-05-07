@@ -1,10 +1,18 @@
 using UnityEngine;
 
+
 public class PowerUpNew : MonoBehaviour
 {
-  public class HealthValue : PowerUpEfecto
+    public HealthSystem healPU; 
+    private void OnTriggerEnter(Collider other)
     {
-        public float Amount;
-        public override void Apply(GameObject target) => target.GetComponent<HealthSystem>().currentHealth. += Amount;
+        if (other.CompareTag("Player"))
+        {
+            healPU.Heal(50f);
+            Destroy(gameObject);
+        }
+
+        
+
     }
 }
