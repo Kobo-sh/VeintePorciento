@@ -15,8 +15,8 @@ public class HealthSystem : MonoBehaviour
     // ──────────────────────────────────────────────
 
     [Header("Vida")]
-    [SerializeField] private float maxHealth = 100f;
-    [SerializeField] private float currentHealth;
+    [SerializeField] public float maxHealth = 100f;
+    [SerializeField] public float currentHealth;
 
     [Header("Regeneración")]
     [SerializeField] private bool enableRegeneration = false;
@@ -171,7 +171,7 @@ public class HealthSystem : MonoBehaviour
     /// <summary>
     /// Modifica la vida máxima. Si adjustCurrent es true, escala la vida actual proporcionalmente.
     /// </summary>
-    public void SetMaxHealth(float newMaxHealth, bool adjustCurrent = false)
+    public void SetMaxHealth(int newMaxHealth, bool adjustCurrent = false)
     {
         if (newMaxHealth <= 0f) return;
 
