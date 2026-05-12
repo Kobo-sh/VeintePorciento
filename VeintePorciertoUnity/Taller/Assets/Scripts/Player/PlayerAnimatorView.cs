@@ -1,8 +1,7 @@
-using UnityEngine;  // Librería principal de Unity.
+using UnityEngine;  
 
 public class PlayerAnimatorView : MonoBehaviour
 {
-    // Enum para representar el estado lógico actual de animación.
     public enum AnimationState
     {
         Idle,

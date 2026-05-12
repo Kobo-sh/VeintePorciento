@@ -11,15 +11,14 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private float currentHealth = 100f;
 
     [Header("Speed Settings")]
-    [SerializeField] private float baseSpeed = 5f;
-    private float speedMultiplier = 1f;
+    public float baseSpeed = 5f;
+    public float currentSpeed = 5f;
 
     [Header("Shield")]
     [SerializeField] private bool isShieldActive = false;
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
-    public float CurrentSpeed => baseSpeed * speedMultiplier;
     public bool IsShieldActive => isShieldActive;
 
 
@@ -61,12 +60,13 @@ public class PlayerStats : MonoBehaviour
     public void SetSpeedMultiplier(float multiplier)
     {
         if (multiplier <= 0f)
-
+        {
+            currentSpeed = baseSpeed * multiplier;
             return;
+        }
+            
 
-        speedMultiplier = multiplier;
-
-        return;
+     
     }
 
     public void SetShield(bool active)
