@@ -1,9 +1,9 @@
 using UnityEngine;
 
 
-public class PowerUpNew : MonoBehaviour
+public class PowerUpHeal : MonoBehaviour
 {
-    public HealthSystem healPU; 
+    private HealthSystem healPU; 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))

@@ -57,7 +57,7 @@ public class HealthSystem : MonoBehaviour
     // VARIABLES PRIVADAS
     // ──────────────────────────────────────────────
 
-    private bool isInvincible = false;
+    public bool isInvincible = false;
     private float regenTimer = 0f;
     private bool isDead = false;
     private Coroutine invincibilityCoroutine;

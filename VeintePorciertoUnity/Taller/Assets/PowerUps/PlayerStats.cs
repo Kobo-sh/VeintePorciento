@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
+    
+    [SerializeField] public int puntos = 0;
+
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private float currentHealth = 100f;
