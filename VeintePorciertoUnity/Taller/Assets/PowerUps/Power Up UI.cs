@@ -23,8 +23,7 @@ public class PowerUpUI : MonoBehaviour
 
 
     public void SelectHeal() => SetSelectedPowerUp(PowerUpType.Heal);
-
-    public void SelectSpeedBoost() => SetSelectedPowerUp(PowerUpType.SpeedBoost);
+    //public void SelectSpeedBoost() => SetSelectedPowerUp(PowerUpType.SpeedBoost);
 
     public void SelectShield() => SetSelectedPowerUp(PowerUpType.Shield);
 
@@ -130,7 +129,7 @@ public class PowerUpUI : MonoBehaviour
 
             case PowerUpType.SpeedBoost:
                 playerStats.SetSpeedMultiplier(value);
-                messageText.text = $"Velocidad actual: {playerStats.CurrentSpeed}";
+                messageText.text = $"Velocidad actual: {playerStats.currentSpeed}";
                 break;
 
             case PowerUpType.Shield:

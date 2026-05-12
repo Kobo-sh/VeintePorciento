@@ -1,9 +1,7 @@
-using UnityEngine;
-
+﻿using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
-    
     [SerializeField] public int puntos = 0;
 
     [Header("Health Settings")]
@@ -12,7 +10,7 @@ public class PlayerStats : MonoBehaviour
 
     [Header("Speed Settings")]
     public float baseSpeed = 5f;
-    public float currentSpeed = 5f;
+    public float currentSpeed = 5f;  // ← descomentado
 
     [Header("Shield")]
     [SerializeField] private bool isShieldActive = false;
@@ -21,56 +19,37 @@ public class PlayerStats : MonoBehaviour
     public float MaxHealth => maxHealth;
     public bool IsShieldActive => isShieldActive;
 
-
-
     public void Heal(float amount)
     {
-        if (amount <= 0f)
-
-            return;
-
+        if (amount <= 0f) return;
         currentHealth += amount;
-
         if (currentHealth > maxHealth)
             currentHealth = maxHealth;
     }
 
     public void TakeDamage(float damage)
     {
-        if (damage <= 0f)
-            return;
-
-
+        if (damage <= 0f) return;
         if (isShieldActive)
         {
             isShieldActive = false;
-            Debug.Log("El escudo bloque� el da�o y se rompi�");
+            Debug.Log("El escudo bloqueó el daño y se rompió");
             return;
         }
-
-
         currentHealth -= damage;
-
-        if (currentHealth < 0f)
-            currentHealth = 0f;
-
+        if (currentHealth < 0f) currentHealth = 0f;
         Debug.Log("Vida actual: " + currentHealth);
     }
 
     public void SetSpeedMultiplier(float multiplier)
     {
-        if (multiplier <= 0f)
-        {
-            currentSpeed = baseSpeed * multiplier;
-            return;
-        }
-            
-
-     
+        if (multiplier <= 0f) return;
+        currentSpeed = baseSpeed * multiplier;
     }
 
     public void SetShield(bool active)
     {
         isShieldActive = active;
     }
-}
+
+}  // ← llave de cierre de la clase
