@@ -10,9 +10,7 @@ public class PowerUpSpeed : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             PStats.SetSpeedMultiplier(5f);
-            PStats.baseSpeed = 5;
-            PStats.speedMultiplier = 5;
-            PStats.CurrentSpeed 
+
             Destroy(gameObject);
         }
 
