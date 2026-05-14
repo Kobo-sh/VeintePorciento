@@ -10,7 +10,9 @@ public class PowerUpShieldTimed : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            Destroy(gameObject);
             PlayerStats pStats = other.GetComponent<PlayerStats>();
+            
 
             if (pStats == null)
             {
@@ -25,7 +27,7 @@ public class PowerUpShieldTimed : MonoBehaviour
             }
 
             pStats.StartCoroutine(ActivateShieldForDuration(pStats));
-            Destroy(gameObject);
+            
         }
     }
 
