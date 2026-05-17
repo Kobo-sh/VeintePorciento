@@ -6,6 +6,8 @@ public class PlayerMovementModel : MonoBehaviour
     [SerializeField] private PlayerInputController playerInputController;
     // Referencia al Rigidbody del personaje.
     [SerializeField] private Rigidbody rb;
+    // Referencia a la cámara para movimiento relativo.
+    [SerializeField] private Transform cameraTransform;
 
     [Header("Salto")]
     [SerializeField] private float jumpForce = 5f;
@@ -36,29 +38,26 @@ public class PlayerMovementModel : MonoBehaviour
         {
             Debug.LogError("[PlayerMovementModel] Falta asignar Rigidbody en el Inspector.");
         }
-        // Validamos groundCheck.
         if (groundCheck == null)
         {
             Debug.LogError("[PlayerMovementModel] Falta asignar GroundCheck en el Inspector.");
         }
+        if (cameraTransform == null)
+        {
+            Debug.LogError("[PlayerMovementModel] Falta asignar CameraTransform en el Inspector.");
+        }
 
-        // Guardamos la velocidad base.
         _baseMoveSpeed = moveSpeed;
     }
 
     private void FixedUpdate()
     {
-        // Verificamos si está en el suelo.
         CheckGround();
-        // Mueve el rigidbody.
         Move();
-        // Maneja el salto.
         HandleJump();
-        // Actualiza velocidad y dirección real.
         UpdateVelocityData();
     }
 
-    // NUEVO: Detecta si el personaje está tocando el suelo.
     private void CheckGround()
     {
         if (groundCheck == null) return;
@@ -72,29 +71,35 @@ public class PlayerMovementModel : MonoBehaviour
         Debug.Log($"[PlayerMovementModel] IsGrounded: {IsGrounded}");
     }
 
-    // NUEVO: Aplica la fuerza de salto si hay input y está en el suelo.
     private void HandleJump()
     {
         if (playerInputController == null || rb == null) return;
 
         if (playerInputController.JumpInput && IsGrounded)
         {
-            // Reseteamos Y para que el salto sea siempre consistente.
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             Debug.Log($"[PlayerMovementModel] Salto aplicado con fuerza: {jumpForce}");
-
-            //fix del delay
             playerInputController.ConsumeJump();
         }
     }
 
     public void Move()
     {
-        if (playerInputController == null || rb == null) return;
+        if (playerInputController == null || rb == null || cameraTransform == null) return;
 
         Vector2 input = playerInputController.MoveInput;
-        Vector3 moveDirection = new Vector3(input.x, 0f, input.y);
+
+        // Calculamos direcciones relativas a la cámara.
+        Vector3 forward = cameraTransform.forward;
+        Vector3 right = cameraTransform.right;
+        forward.y = 0f;
+        right.y = 0f;
+        forward.Normalize();
+        right.Normalize();
+
+        // Convertimos el input 2D a dirección 3D relativa a la cámara.
+        Vector3 moveDirection = forward * input.y + right * input.x;
 
         if (moveDirection.magnitude > 1f)
         {
@@ -121,7 +126,6 @@ public class PlayerMovementModel : MonoBehaviour
         }
     }
 
-    // NUEVO: Aplica un multiplicador a la velocidad base.
     public void SetSpeedMultiplier(float multiplier)
     {
         moveSpeed = _baseMoveSpeed * multiplier;

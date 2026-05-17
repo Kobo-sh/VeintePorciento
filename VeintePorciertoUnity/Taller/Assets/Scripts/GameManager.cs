@@ -34,6 +34,12 @@ public class GameManager : MonoBehaviour
             playerHealth.OnDeath.AddListener(OnPlayerDeath);
         else
             Debug.LogWarning("[GameManager] No se encontró HealthSystem en el Player.");
+
+
+        //MOUSE NUEVA INTEGRACION
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Update()
@@ -59,9 +65,13 @@ public class GameManager : MonoBehaviour
         {
             case "Play":
                 Time.timeScale = 1;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
                 break;
             case "Pause":
                 Time.timeScale = 0;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
                 break;
             case "Quit":
                 Application.Quit();
