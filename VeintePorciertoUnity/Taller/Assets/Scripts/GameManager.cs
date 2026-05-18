@@ -9,10 +9,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-
     [Header("Configuración")]
     [SerializeField] private float delayBeforeGameOver = 2f;
     [SerializeField] private GameObject menuPausa;
+
+    [Header("Checkpoints")]
+    private Checkpoint lastCheckpoint;
 
     private bool gameOver = false;
 
@@ -34,9 +36,6 @@ public class GameManager : MonoBehaviour
             playerHealth.OnDeath.AddListener(OnPlayerDeath);
         else
             Debug.LogWarning("[GameManager] No se encontró HealthSystem en el Player.");
-
-
-        //MOUSE NUEVA INTEGRACION
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -73,6 +72,11 @@ public class GameManager : MonoBehaviour
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 break;
+            case "Checkpoint":
+                gameOver = false;
+                Time.timeScale = 1;
+                StartCoroutine(LoadAndRespawn());
+                break;
             case "Quit":
                 Application.Quit();
                 break;
@@ -98,11 +102,49 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("PapiPerdiste");
     }
 
+    private IEnumerator LoadAndRespawn()
+    {
+        SceneManager.LoadScene("probuilder");
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        RespawnPlayer();
+    }
+
+    public void RegisterCheckpoint(Checkpoint checkpoint)
+    {
+        if (lastCheckpoint == checkpoint) return;
+
+        if (lastCheckpoint != null)
+            lastCheckpoint.Deactivate();
+
+        lastCheckpoint = checkpoint;
+        lastCheckpoint.Activate();
+
+        Debug.Log($"[GameManager] Checkpoint registrado: {checkpoint.gameObject.name}");
+    }
+
+    public void RespawnPlayer()
+    {
+        if (lastCheckpoint == null)
+        {
+            Debug.LogWarning("[GameManager] No hay checkpoint registrado.");
+            return;
+        }
+
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            player.transform.position = lastCheckpoint.transform.position + Vector3.up;
+            player.GetComponent<HealthSystem>()?.HealFull();
+        }
+
+        Debug.Log("[GameManager] Jugador respawneado en checkpoint.");
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Collision"))
         {
-
         }
     }
 }
