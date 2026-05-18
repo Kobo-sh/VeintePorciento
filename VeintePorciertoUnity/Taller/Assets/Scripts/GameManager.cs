@@ -15,8 +15,11 @@ public class GameManager : MonoBehaviour
 
     [Header("Checkpoints")]
     private Checkpoint lastCheckpoint;
+    private Vector3 lastCheckpointPosition;
+    private bool hasCheckpoint = false;
 
     private bool gameOver = false;
+    private string currentScene;
 
     private void Awake()
     {
@@ -29,16 +32,55 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name != "PapiPerdiste" && scene.name != "MenuInicial")
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            HealthSystem playerHealth = GameObject.FindWithTag("Player")?.GetComponent<HealthSystem>();
+            if (playerHealth != null)
+                playerHealth.OnDeath.AddListener(OnPlayerDeath);
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
+
     private void Start()
     {
+        currentScene = SceneManager.GetActiveScene().name;
+
         HealthSystem playerHealth = GameObject.FindWithTag("Player")?.GetComponent<HealthSystem>();
         if (playerHealth != null)
             playerHealth.OnDeath.AddListener(OnPlayerDeath);
         else
             Debug.LogWarning("[GameManager] No se encontró HealthSystem en el Player.");
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        if (SceneManager.GetActiveScene().name == "MenuInicial" ||
+            SceneManager.GetActiveScene().name == "PapiPerdiste")
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     private void Update()
@@ -67,6 +109,16 @@ public class GameManager : MonoBehaviour
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
                 break;
+            case "Nivel1":
+                gameOver = false;
+                Time.timeScale = 1;
+                SceneManager.LoadScene("Nvl1");
+                break;
+            case "Nivel2":
+                gameOver = false;
+                Time.timeScale = 1;
+                SceneManager.LoadScene("Nvl2");
+                break;
             case "Pause":
                 Time.timeScale = 0;
                 Cursor.lockState = CursorLockMode.None;
@@ -83,7 +135,16 @@ public class GameManager : MonoBehaviour
             case "Reset":
                 gameOver = false;
                 Time.timeScale = 1;
-                SceneManager.LoadScene("probuilder");
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                SceneManager.LoadScene(currentScene);
+                break;
+            case "Menu":
+                gameOver = false;
+                Time.timeScale = 1;
+                hasCheckpoint = false;
+                lastCheckpoint = null;
+                SceneManager.LoadScene("MenuInicial");
                 break;
         }
     }
@@ -92,6 +153,7 @@ public class GameManager : MonoBehaviour
     {
         if (gameOver) return;
         gameOver = true;
+        currentScene = SceneManager.GetActiveScene().name;
         Debug.Log("[GameManager] El jugador murió. Cargando pantalla de Game Over...");
         StartCoroutine(LoadGameOverScene());
     }
@@ -104,9 +166,8 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator LoadAndRespawn()
     {
-        SceneManager.LoadScene("probuilder");
-        yield return new WaitForEndOfFrame();
-        yield return new WaitForEndOfFrame();
+        SceneManager.LoadScene(currentScene);
+        yield return new WaitForSeconds(0.5f);
         RespawnPlayer();
     }
 
@@ -118,6 +179,8 @@ public class GameManager : MonoBehaviour
             lastCheckpoint.Deactivate();
 
         lastCheckpoint = checkpoint;
+        lastCheckpointPosition = checkpoint.transform.position;
+        hasCheckpoint = true;
         lastCheckpoint.Activate();
 
         Debug.Log($"[GameManager] Checkpoint registrado: {checkpoint.gameObject.name}");
@@ -125,7 +188,7 @@ public class GameManager : MonoBehaviour
 
     public void RespawnPlayer()
     {
-        if (lastCheckpoint == null)
+        if (!hasCheckpoint)
         {
             Debug.LogWarning("[GameManager] No hay checkpoint registrado.");
             return;
@@ -134,7 +197,7 @@ public class GameManager : MonoBehaviour
         GameObject player = GameObject.FindWithTag("Player");
         if (player != null)
         {
-            player.transform.position = lastCheckpoint.transform.position + Vector3.up;
+            player.transform.position = lastCheckpointPosition + Vector3.up;
             player.GetComponent<HealthSystem>()?.HealFull();
         }
 
