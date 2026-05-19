@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using UnityEngine;
+using System.Collections;
 
 public class PlayerStats : MonoBehaviour
 {
@@ -10,14 +11,27 @@ public class PlayerStats : MonoBehaviour
 
     [Header("Speed Settings")]
     public float baseSpeed = 5f;
-    public float currentSpeed = 5f;  // ← descomentado
+    public float currentSpeed = 5f;
 
     [Header("Shield")]
     [SerializeField] private bool isShieldActive = false;
 
+    [Header("Referencias")]
+    // Referencia al script de movimiento real del personaje
+    [SerializeField] private PlayerMovementModel playerMovementModel;
+
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
     public bool IsShieldActive => isShieldActive;
+
+    private Coroutine speedBoostCoroutine;
+
+    private void Awake()
+    {
+        // Si no se asignó en el Inspector, lo buscamos en el mismo GameObject
+        if (playerMovementModel == null)
+            playerMovementModel = GetComponent<PlayerMovementModel>();
+    }
 
     public void Heal(float amount)
     {
@@ -45,6 +59,12 @@ public class PlayerStats : MonoBehaviour
     {
         if (multiplier <= 0f) return;
         currentSpeed = baseSpeed * multiplier;
+
+        // Aplicar al movimiento real del personaje
+        if (playerMovementModel != null)
+            playerMovementModel.SetSpeedMultiplier(multiplier);
+        else
+            Debug.LogWarning("[PlayerStats] No se encontró PlayerMovementModel. La velocidad no se aplicó al movimiento.");
     }
 
     public void SetShield(bool active)
@@ -52,4 +72,28 @@ public class PlayerStats : MonoBehaviour
         isShieldActive = active;
     }
 
-}  // ← llave de cierre de la clase
+    /// <summary>
+    /// Aplica un boost de velocidad temporal. Si ya hay uno activo,
+    /// lo reinicia con los nuevos valores en lugar de apilar efectos.
+    /// </summary>
+    public void ApplySpeedBoostTemporary(float multiplier, float duration)
+    {
+        if (speedBoostCoroutine != null)
+            StopCoroutine(speedBoostCoroutine);
+
+        speedBoostCoroutine = StartCoroutine(SpeedBoostCoroutine(multiplier, duration));
+    }
+
+    private IEnumerator SpeedBoostCoroutine(float multiplier, float duration)
+    {
+        SetSpeedMultiplier(multiplier);
+        Debug.Log($"Speed boost activado: x{multiplier} por {duration} segundos.");
+
+        yield return new WaitForSeconds(duration);
+
+        SetSpeedMultiplier(1f);
+        Debug.Log("Speed boost terminado. Velocidad restaurada.");
+
+        speedBoostCoroutine = null;
+    }
+}
