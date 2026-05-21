@@ -17,20 +17,24 @@ public class HealthBarUI : MonoBehaviour
     [SerializeField] private HealthSystem healthSystem;
 
     [Header("UI - Barra")]
-    [SerializeField] private Slider healthSlider;         // Opción A: Slider de Unity UI
-    [SerializeField] private Image  healthFillImage;      // Opción B: Image tipo Filled
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private Image healthFillImage;
 
     [Header("UI - Texto")]
-    [SerializeField] private TMP_Text healthText;         // Ej: "85 / 100"
+    [SerializeField] private TMP_Text healthText;
     [SerializeField] private bool showAsPercentage = false;
 
     [Header("Colores dinámicos")]
-    [SerializeField] private bool  useDynamicColor = true;
-    [SerializeField] private Color colorFull      = Color.green;
-    [SerializeField] private Color colorMid       = Color.yellow;
-    [SerializeField] private Color colorLow       = Color.red;
-    [SerializeField] [Range(0f, 1f)] private float midThreshold = 0.5f;
-    [SerializeField] [Range(0f, 1f)] private float lowThreshold = 0.25f;
+    [SerializeField] private bool useDynamicColor = true;
+    [SerializeField] private Color colorFull = Color.green;
+    [SerializeField] private Color colorMid = Color.yellow;
+    [SerializeField] private Color colorLow = Color.red;
+    [SerializeField][Range(0f, 1f)] private float midThreshold = 0.5f;
+    [SerializeField][Range(0f, 1f)] private float lowThreshold = 0.25f;
+
+    [Header("Puntos")]
+    [SerializeField] private TMP_Text puntosText;
+    [SerializeField] private PlayerStats playerStats;
 
     // ──────────────────────────────────────────────
     // CICLO DE VIDA DE UNITY
@@ -46,12 +50,15 @@ public class HealthBarUI : MonoBehaviour
 
         if (healthSystem != null)
         {
-            // Suscripción al evento para actualizar la UI automáticamente
             healthSystem.OnHealthChanged.AddListener(UpdateHealthBar);
-
-            // Inicializar con los valores actuales
             UpdateHealthBar(healthSystem.CurrentHealth, healthSystem.MaxHealth);
         }
+    }
+
+    private void Update()
+    {
+        if (playerStats != null && puntosText != null)
+            puntosText.text = $"Puntos: {playerStats.puntos}";
     }
 
     private void OnDestroy()
@@ -64,21 +71,13 @@ public class HealthBarUI : MonoBehaviour
     // MÉTODOS PÚBLICOS
     // ──────────────────────────────────────────────
 
-    /// <summary>
-    /// Actualiza todos los elementos de UI con los valores actuales de vida.
-    /// Puede llamarse también directamente desde el evento OnHealthChanged del Inspector.
-    /// </summary>
     public void UpdateHealthBar(float current, float max)
     {
         float percentage = (max > 0f) ? current / max : 0f;
 
-        // Actualizar Slider
         if (healthSlider != null)
-        {
             healthSlider.value = percentage;
-        }
 
-        // Actualizar Image Fill
         if (healthFillImage != null)
         {
             healthFillImage.fillAmount = percentage;
@@ -87,7 +86,6 @@ public class HealthBarUI : MonoBehaviour
                 healthFillImage.color = GetHealthColor(percentage);
         }
 
-        // Actualizar Texto
         if (healthText != null)
         {
             healthText.text = showAsPercentage

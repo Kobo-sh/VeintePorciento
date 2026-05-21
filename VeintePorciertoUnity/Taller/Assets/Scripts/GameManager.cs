@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Configuración")]
     [SerializeField] private float delayBeforeGameOver = 2f;
-    [SerializeField] private GameObject menuPausa;
+    private GameObject menuPausa;
 
     [Header("Checkpoints")]
     private Checkpoint lastCheckpoint;
@@ -42,12 +42,32 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    private void BuscarMenuPausa()
+    {
+        Canvas canvas = FindObjectOfType<Canvas>();
+        if (canvas != null)
+        {
+            Transform found = canvas.transform.Find("MenuDePausa");
+            if (found != null)
+            {
+                menuPausa = found.gameObject;
+                Debug.Log("[GameManager] MenuDePausa encontrado.");
+            }
+            else
+            {
+                Debug.LogWarning("[GameManager] No se encontró MenuDePausa en el Canvas.");
+            }
+        }
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name != "PapiPerdiste" && scene.name != "MenuInicial")
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+
+            BuscarMenuPausa();
 
             HealthSystem playerHealth = GameObject.FindWithTag("Player")?.GetComponent<HealthSystem>();
             if (playerHealth != null)
@@ -63,6 +83,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         currentScene = SceneManager.GetActiveScene().name;
+
+        BuscarMenuPausa();
 
         HealthSystem playerHealth = GameObject.FindWithTag("Player")?.GetComponent<HealthSystem>();
         if (playerHealth != null)
@@ -85,6 +107,8 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (menuPausa == null) return;
+
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             if (menuPausa.activeSelf)
