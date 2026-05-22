@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name != "PapiPerdiste" && scene.name != "MenuInicial")
+        if (scene.name != "PapiPerdiste" && scene.name != "MenuInicial" && scene.name != "Paso1" && scene.name != "Victoria")
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -93,7 +93,9 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("[GameManager] No se encontró HealthSystem en el Player.");
 
         if (SceneManager.GetActiveScene().name == "MenuInicial" ||
-            SceneManager.GetActiveScene().name == "PapiPerdiste")
+            SceneManager.GetActiveScene().name == "PapiPerdiste" ||
+            SceneManager.GetActiveScene().name == "Paso1" ||
+            SceneManager.GetActiveScene().name == "Victoria")
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -121,6 +123,25 @@ public class GameManager : MonoBehaviour
                 EstadoDelJuego("Pause");
                 menuPausa.SetActive(true);
             }
+        }
+
+        CheckPuntos();
+    }
+
+    private void CheckPuntos()
+    {
+        PlayerStats playerStats = GameObject.FindWithTag("Player")?.GetComponent<PlayerStats>();
+        if (playerStats == null) return;
+
+        if (currentScene == "Nvl1" && playerStats.puntos >= 4)
+        {
+            playerStats.puntos = 0;
+            SceneManager.LoadScene("Paso1");
+        }
+        else if (currentScene == "Nvl2" && playerStats.puntos >= 4)
+        {
+            playerStats.puntos = 0;
+            SceneManager.LoadScene("Victoria");
         }
     }
 

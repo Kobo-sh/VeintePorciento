@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,7 +11,6 @@ public class EnemyController : MonoBehaviour
     private NavMeshAgent agent;
     private Transform player;
     private float attackTimer = 0f;
-    private bool isAttacking = false;
 
     private void Start()
     {
@@ -74,12 +74,21 @@ public class EnemyController : MonoBehaviour
         if (distanceToPlayer <= enemyModel.AttackRange)
         {
             enemyView.SetAttacking();
+            StartCoroutine(DelayedDamage());
+            Debug.Log("[EnemyController] Animación de ataque activada.");
+        }
+    }
 
+    private IEnumerator DelayedDamage()
+    {
+        yield return new WaitForSeconds(0.5f);
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        if (distanceToPlayer <= enemyModel.AttackRange)
+        {
             HealthSystem health = player.GetComponent<HealthSystem>();
             if (health != null)
                 health.TakeDamage(enemyModel.Damage);
-
-            Debug.Log($"[EnemyController] Atacó al jugador por {enemyModel.Damage} de daño.");
+            Debug.Log($"[EnemyController] Daño aplicado: {enemyModel.Damage}");
         }
     }
 }
