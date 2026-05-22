@@ -14,8 +14,9 @@ public class GameOverButtons : MonoBehaviour
 
     public void OnSalir()
     {
-        GameManager.Instance.EstadoDelJuego("Quit");
+        GameManager.Instance.EstadoDelJuego("Menu");
     }
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.None;

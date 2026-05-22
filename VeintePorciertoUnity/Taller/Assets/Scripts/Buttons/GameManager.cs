@@ -127,6 +127,11 @@ public class GameManager : MonoBehaviour
 
         CheckPuntos();
     }
+    public void CerrarMenuPausa()
+    {
+        if (menuPausa != null)
+            menuPausa.SetActive(false);
+    }
 
     private void CheckPuntos()
     {

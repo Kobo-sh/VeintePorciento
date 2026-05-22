@@ -1060,7 +1060,7 @@ GameObject:
   - component: {fileID: 20256012}
   - component: {fileID: 20256011}
   - component: {fileID: 20256010}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20747,10 +20747,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1714940719}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: EstadoDelJuego
-        m_Mode: 5
+      - m_Target: {fileID: 611972950}
+        m_TargetAssemblyTypeName: PausaButtons, Assembly-CSharp
+        m_MethodName: Reanudar
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -31463,10 +31463,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1714940719}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: EstadoDelJuego
-        m_Mode: 5
+      - m_Target: {fileID: 611972950}
+        m_TargetAssemblyTypeName: PausaButtons, Assembly-CSharp
+        m_MethodName: Reiniciar
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -32743,6 +32743,50 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &611972949
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 611972951}
+  - component: {fileID: 611972950}
+  m_Layer: 0
+  m_Name: PausaButtons
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &611972950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611972949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 779a5ea524cfd6b4aaa582f046add324, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &611972951
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611972949}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 960, y: 540, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &612376149
 GameObject:
   m_ObjectHideFlags: 0
@@ -40709,7 +40753,7 @@ GameObject:
   - component: {fileID: 731950357}
   - component: {fileID: 731950356}
   - component: {fileID: 731950355}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42921,7 +42965,7 @@ GameObject:
   - component: {fileID: 772626751}
   - component: {fileID: 772626750}
   - component: {fileID: 772626749}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66850,10 +66894,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1714940719}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: EstadoDelJuego
-        m_Mode: 5
+      - m_Target: {fileID: 611972950}
+        m_TargetAssemblyTypeName: PausaButtons, Assembly-CSharp
+        m_MethodName: Checkpoint
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -73992,10 +74036,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1714940719}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: EstadoDelJuego
-        m_Mode: 5
+      - m_Target: {fileID: 611972950}
+        m_TargetAssemblyTypeName: PausaButtons, Assembly-CSharp
+        m_MethodName: Menu
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -107258,3 +107302,4 @@ SceneRoots:
   - {fileID: 1714940720}
   - {fileID: 741320981}
   - {fileID: 1704510174}
+  - {fileID: 611972951}
